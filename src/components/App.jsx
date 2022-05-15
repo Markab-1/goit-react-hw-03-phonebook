@@ -1,16 +1,80 @@
+import React, { Component } from 'react';
+
+import Container from './Container/Container';
+import Section from './Section/Section';
+import Form from './Form/Form';
+import Filter from './Filter/Filter';
+import ContactList from './ContactList/ContactList';
+
 export const App = () => {
+  class PhoneBook extends Component {
+    state = {
+      contacts: [
+        { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+        { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+        { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+        { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+      ],
+      filter: '',
+    };
+
+    handleFilter = e => {
+      const { name, value } = e.currentTarget;
+      this.setState({ [name]: value });
+    };
+
+    deleteContact = id => {
+      this.setState(prevState => ({
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      }));
+    };
+
+    formSubmitHandler = contactsItem => {
+      const { name } = contactsItem;
+
+      const compareNames = this.state.contacts.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      );
+
+      if (compareNames) {
+        alert(`${name} is already in the Contact list`);
+        return;
+      }
+
+      this.setState(state => {
+        return {
+          contacts: state.contacts.concat(contactsItem),
+        };
+      });
+    };
+
+    render() {
+      const { contacts, filter } = this.state;
+      const normalizedFilter = filter.toLowerCase();
+      const visibleContacts = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(normalizedFilter)
+      );
+
+      return (
+        <div>
+          <Section title="Phonebook">
+            <Form onSubmit={this.formSubmitHandler} />
+          </Section>
+          <Section title="Contacts">
+            <Filter value={filter} onChange={this.handleFilter} />
+            <ContactList
+              visibleContacts={visibleContacts}
+              onDeleteContact={this.deleteContact}
+            />
+          </Section>
+        </div>
+      );
+    }
+  }
+
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <Container>
+      <PhoneBook />
+    </Container>
   );
 };
