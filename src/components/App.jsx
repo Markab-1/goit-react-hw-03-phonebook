@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Container from './Container/Container';
 import Section from './Section/Section';
@@ -89,4 +90,17 @@ export const App = () => {
       <PhoneBook />
     </Container>
   );
+};
+
+App.propTypes = {
+  state: PropTypes.shape({
+    contacts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        name: PropTypes.string,
+        number: PropTypes.string,
+      })
+    ),
+    filter: PropTypes.string,
+  }),
 };
